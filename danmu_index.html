@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--
+ 思路是先建好屏幕，然后在屏幕下建一个<div>用来装弹幕（弹幕也是一个个<div>），并且将弹幕的position属性设置为absolute这样就可以任意改变弹幕的位置，最后只要使用
+ obj.animate()方法就可以使弹幕移动了，记住在移出屏幕后删除它。
+ -->
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" />
+    <link rel="stylesheet" type="text/css" href="danmu_index_css.css" />
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".submit-message").click(function() {
+                var text=$(".send-text").val();
+
+                var textObj = $("<div class=\"dm_message\"></div>");
+                textObj.text(text);
+                $(".dm_show").append(textObj);
+                moveObj(textObj);
+
+            //    $(".send-text").val("");
+            });
+
+            $(".clear-screan").click(function () {
+               $(".dm_show").empty();
+            });
+
+            var topMin = $(".dm_mask").offset().top;
+            var topMax = topMin+$(".dm_mask").height();
+            var leftMin=$(".dm_mask").offset().left;
+            var _top = topMin;
+
+            var moveObj = function(obj){
+                var _left = $(".dm_mask").width()+leftMin-obj.width();
+                _top=topMin+$(".dm_mask").height()*Math.random()-obj.height();
+                if(_top<topMin){
+                    _top=topMin;
+                }
+                obj.css({
+                    top:_top,
+                    left:_left,
+                    color:getRandomColor()
+                });
+                var time = 20000 + 10000 * Math.random();
+
+                obj.animate({
+                    left:leftMin,
+                },time,function () {
+                   obj.hide();
+                });
+
+            };
+
+            var getRandomColor = function() {
+                return '#' + (function(h) {
+                        return new Array(7 - h.length).join("0") + h
+                    })((Math.random() * 0x1000000 << 0).toString(16))
+            }
+        })
+    </script>
+
+</head>
+<body>
+<div class="dm">
+    <div class="dm_screen">
+        <div class="dm_mask"></div>
+        <div class="dm_show"></div>
+    </div>
+    <div class="send">
+        <p><input type="text" placeholder="输入弹幕" class="send-text" id="input-message"></p>
+         <p class="send-button">
+        <ul id="button">
+        <li> <input type="button" value="发 送" class="submit-message" onclick="submitText()" id="aaa"></li>
+        <li><input type="button" value="清屏" class="clear-screan"></li></ul>
+        </p></div>
+    </div>
+</div>
+</body>
+</html>
